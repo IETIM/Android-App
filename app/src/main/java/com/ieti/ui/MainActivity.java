@@ -1,4 +1,4 @@
-package com.arep.ui;
+package com.ieti.ui;
 
 import android.os.Bundle;
 import android.view.View;

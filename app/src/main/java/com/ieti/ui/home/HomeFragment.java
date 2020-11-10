@@ -1,4 +1,4 @@
-package com.arep.ui.ui.home;
+package com.ieti.ui.home;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.arep.ui.R;
+import com.ieti.ui.R;
 
 public class HomeFragment extends Fragment {
 

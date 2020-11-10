@@ -1,4 +1,4 @@
-package com.arep.ui.ui.home;
+package com.ieti.ui.home;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
