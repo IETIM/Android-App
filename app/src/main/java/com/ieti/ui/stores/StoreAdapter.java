@@ -1,6 +1,7 @@
 package com.ieti.ui.stores;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 
 import com.ieti.model.Shop;
 import com.ieti.ui.R;
+import com.ieti.ui.products.ProductsActivity;
 
 import java.util.List;
 
@@ -41,9 +43,18 @@ public class StoreAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         Shop shop = getItem(position);
-        View card = LayoutInflater.from(context).inflate(R.layout.item_tienda,null).findViewById(R.id.card);
+        View card = LayoutInflater.from(context).inflate(R.layout.item_tienda,null).findViewById(R.id.idProduct_ViewCard);
         ((TextView)card.findViewById(R.id.name)).setText(shop.getName());
         ((TextView)card.findViewById(R.id.desc)).setText(shop.getLocation());
+        card.findViewById(R.id.idItem_TiendaVer).setOnClickListener((view) -> {
+            redirectProducts(shop.getId());
+        });
         return card;
+    }
+
+    public void redirectProducts(String idTienda) {
+        Intent intent = new Intent(context, ProductsActivity.class);
+        intent.putExtra("id", idTienda);
+        context.startActivity(intent);
     }
 }
