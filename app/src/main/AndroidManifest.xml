@@ -22,7 +22,11 @@
         <activity
             android:name=".stores.StoreActivity"
             android:parentActivityName=".MainActivity">
-    </activity>
+        </activity>
+        <activity
+            android:name=".products.ProductsActivity"
+            android:parentActivityName=".stores.StoreActivity">
+        </activity>
     </application>
 
 </manifest>

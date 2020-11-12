@@ -12,4 +12,6 @@ public interface ShopPersistence {
 
     List<Shop> getShopsByCategory(String type);
 
+    Shop getShopById(String id);
+
 }
