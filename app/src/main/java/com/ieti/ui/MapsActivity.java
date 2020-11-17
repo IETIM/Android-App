@@ -66,14 +66,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         markers= new ArrayList<Marker>();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        getLocation();
         shops = ShopPersistenceImpl.getInstance().getShops();
         placeService = new Retrofit.Builder().
                 baseUrl("https://geocode.search.hereapi.com/")
                 .addConverterFactory(JacksonConverterFactory.create())
                 .build()
                 .create(PlaceService.class);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        getLocation();
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -142,10 +141,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
+
     @Override
-    public void onBackPressed(){
-        super.onBackPressed();
+    public void onStop(){
+        super.onStop();
         manager.removeUpdates(this);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
+    public void onRestart(){
+        super.onRestart();
+        getLocation();
     }
 
     public void drawStores(){
