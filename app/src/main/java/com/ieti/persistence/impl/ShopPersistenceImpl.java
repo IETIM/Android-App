@@ -20,9 +20,11 @@ public class ShopPersistenceImpl  implements ShopPersistence {
 
     private ShopPersistenceImpl(){
         shops = new ArrayList<>();
-        shops.add(new Shop("SuperStore","Cajica calle 6","Supermercado"));
-        shops.add(new Shop("MeFarmacia","Cajica calle 6","Farmacia"));
-        shops.add(new Shop("Farma2","Cajica calle 6","Farmacia"));
+        shops.add(new Shop("SuperStore","Colombia Cajica calle 8","Supermercado"));
+        shops.add(new Shop("MeFarmacia","Colombia Cajica Vereda Canelon","Farmacia"));
+        shops.add(new Shop("MeFarmacia2","Colombia Centro Comercial SantaFe","Farmacia"));
+        shops.add(new Shop("MeFarmacia3","Colombia Chia Avenida Pradilla","Farmacia"));
+        shops.add(new Shop("Farma2","Colombia Chia Hacienda Fontanar","Farmacia"));
     }
 
 

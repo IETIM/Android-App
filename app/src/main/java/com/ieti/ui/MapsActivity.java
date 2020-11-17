@@ -7,12 +7,20 @@ import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -21,7 +29,21 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.button.MaterialButton;
+import com.ieti.map.service.Address;
 import com.ieti.map.service.PlaceService;
+import com.ieti.map.service.Places;
+import com.ieti.model.Shop;
+import com.ieti.persistence.ShopPersistence;
+import com.ieti.persistence.impl.ShopPersistenceImpl;
+import com.ieti.ui.products.ProductsActivity;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
@@ -34,13 +56,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private double longitude;
     private double latitude;
     private PlaceService placeService;
+    private final ExecutorService executorService = Executors.newFixedThreadPool( 1 );
+    private List<Marker> markers;
+    private List<Shop> shops;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        markers= new ArrayList<Marker>();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         getLocation();
+        shops = ShopPersistenceImpl.getInstance().getShops();
         placeService = new Retrofit.Builder().
                 baseUrl("https://geocode.search.hereapi.com/")
                 .addConverterFactory(JacksonConverterFactory.create())
@@ -50,6 +77,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -74,11 +102,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
-        // Add a marker in Sydney and move the camera
-        //LatLng sydney = new LatLng(-34, 151);
-        //mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        //mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        executorService.execute(()->drawStores());
+        mMap.setOnMarkerClickListener((marker)->clickMarker(marker));
     }
 
     @Override
@@ -91,7 +116,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     .position(position);
             meMarker = mMap.addMarker(a);
             meMarker.setTitle("Yo");
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position,20));
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position,10));
             longitude = location.getLongitude();
             latitude = location.getLatitude();
         }
@@ -122,4 +147,60 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onBackPressed();
         manager.removeUpdates(this);
     }
+
+    public void drawStores(){
+        for(Shop shop:shops){
+            LatLng latLng = getLocationShop(shop);
+            if(latLng!=null) {
+                runOnUiThread(()->{
+                    MarkerOptions a = new MarkerOptions()
+                            .position(latLng);
+                    Marker shopMarker = mMap.addMarker(a);
+                    markers.add(shopMarker);
+                    shopMarker.setTitle(shop.getName());
+                });
+            }
+        }
+    }
+
+    private LatLng getLocationShop(Shop shop) {
+        try {
+            Places places = placeService.getPlaces(shop.getLocation()).execute().body();
+            Address add = places.getItems().get(0).getPosition();
+            return new LatLng(add.getLat(),add.getLng());
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private boolean clickMarker(Marker marker){
+        int index = markers.indexOf(marker);
+        if(index>=0 && !marker.equals(meMarker)){
+            Shop shop = shops.get(index);
+            showPopUpWindow(shop);
+        }
+        return true;
+    }
+
+    private void showPopUpWindow(Shop shop){
+        LayoutInflater inflater = (LayoutInflater) getSystemService(this.LAYOUT_INFLATER_SERVICE);
+        View popupView = inflater.inflate(R.layout.item_tienda_map, null);
+        int width = LinearLayout.LayoutParams.MATCH_PARENT;
+        int height = LinearLayout.LayoutParams.MATCH_PARENT;
+        PopupWindow popupWindow = new PopupWindow(popupView, width, height, true);
+        popupWindow.showAtLocation(findViewById(R.id.map), Gravity.CENTER, 0, 0);
+        ((ImageView) popupView.findViewById(R.id.img)).setImageResource(R.drawable.tienda);
+        ((TextView)popupView.findViewById(R.id.name)).setText(shop.getName());
+        ((TextView)popupView.findViewById(R.id.desc)).setText(shop.getLocation());
+        ((MaterialButton)popupView.findViewById(R.id.idItem_TiendaVer)).setOnClickListener((view)->redirectToStore(shop));
+        ((MaterialButton)popupView.findViewById(R.id.idItem_salir)).setOnClickListener((view)->popupWindow.dismiss());
+    }
+
+    private void redirectToStore(Shop shop){
+        Intent intent = new Intent(this, ProductsActivity.class);
+        intent.putExtra("id", shop.getId());
+        startActivity(intent);
+    }
+
 }

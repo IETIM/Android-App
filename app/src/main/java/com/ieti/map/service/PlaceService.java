@@ -9,5 +9,5 @@ import retrofit2.http.Query;
 
 public interface PlaceService {
     @GET("v1/geocode?apiKey=0aizyNbKZY4J9HTyfyGWqiIltD1mmBqxngImkcvaBS8")
-    Call<List<Place>> getPlaces(@Query("q") String name);
+    Call<Places> getPlaces(@Query("q") String name);
 }
