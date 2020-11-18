@@ -10,8 +10,8 @@
             android:title="Tiendas" />
         <item
             android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="@string/menu_gallery" />
+            android:icon="@drawable/baseline_map_black_18dp"
+            android:title="Mapa de Tiendas" />
         <item
             android:id="@+id/nav_slideshow"
             android:icon="@drawable/ic_menu_slideshow"
