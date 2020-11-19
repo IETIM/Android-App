@@ -5,4 +5,5 @@ import java.util.List;
 
 public interface ProductPersistence {
     List<Product> getProducts(String idShop);
+    Product getProductById(String id);
 }

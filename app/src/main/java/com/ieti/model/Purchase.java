@@ -2,6 +2,8 @@ package com.ieti.model;
 
 import androidx.annotation.Nullable;
 
+import java.util.UUID;
+
 public class Purchase {
     private String id;
     private String productId;
@@ -11,6 +13,7 @@ public class Purchase {
     }
 
     public Purchase(String productId, int quantity) {
+        this.id = UUID.randomUUID().toString();
         this.productId = productId;
         this.quantity = quantity;
     }

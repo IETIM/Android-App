@@ -5,5 +5,5 @@
         android:id="@+id/idMainCart"
         android:icon="@drawable/ic_baseline_shopping_cart_24"
         android:title="Carrito de Compras"
-        app:showAsAction="always" />
+        app:showAsAction="always"/>
 </menu>

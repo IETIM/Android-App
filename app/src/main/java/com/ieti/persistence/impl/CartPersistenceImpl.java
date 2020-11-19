@@ -9,14 +9,22 @@ import java.util.List;
 
 public class CartPersistenceImpl implements CartPersistence {
     private List<Purchase> purchases;
+    private static CartPersistenceImpl instance = null;
 
-    public CartPersistenceImpl() {
+    private CartPersistenceImpl() {
         purchases = new ArrayList<>();
+    }
+
+    public static CartPersistenceImpl getInstace() {
+        if (instance == null)  {
+            instance = new CartPersistenceImpl();
+        }
+        return instance;
     }
 
     @Override
     public List<Purchase> getPurchases() {
-        return null;
+        return purchases;
     }
 
     @Override
@@ -31,6 +39,6 @@ public class CartPersistenceImpl implements CartPersistence {
 
     @Override
     public void deletePurchases() {
-
+        purchases.clear();
     }
 }

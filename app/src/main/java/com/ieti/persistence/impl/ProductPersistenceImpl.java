@@ -27,7 +27,7 @@ public class ProductPersistenceImpl implements ProductPersistence {
 
     private ProductPersistenceImpl(){
         products = new ArrayList<>();
-        products.add(new Product("Limón","5 Limones fresquitos.", 1000L));
+        products.add(new Product("Limón","Limón fresco.", 500L));
         products.add(new Product("Papas Margarita","Paquete de papas sabor a pollo. (Cont. Neto 45g)", 1500L));
         products.add(new Product("Leche Alquería","Leche alquería deslactosa (Cont. Neto 1100 ml)", 3500L));
         products.add(new Product("Yogurt Alpina","Yogurt semidescremado con dulce, con melocotón y cultivos probióticos (Cont. Neto 200g)", 1800L));
@@ -38,5 +38,15 @@ public class ProductPersistenceImpl implements ProductPersistence {
     @Override
     public List<Product> getProducts(String idShop) {
         return products;
+    }
+
+    @Override
+    public Product getProductById(String id) {
+        for (Product product: products) {
+            if (product.getId().equals(id)) {
+                return product;
+            }
+        }
+        return null;
     }
 }

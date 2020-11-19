@@ -5,7 +5,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/idProduct_ViewCard"
+        android:id="@+id/idItem_CartCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp">
@@ -34,7 +34,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Nombre del producto"
-                    android:id="@+id/idProduct_ViewNameProduct"
+                    android:id="@+id/idItem_CartNameProduct"
                     android:textAppearance="?attr/textAppearanceHeadline6"
                     />
                 <TextView
@@ -42,7 +42,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:text="Precio del producto"
-                    android:id="@+id/idProduct_ViewPriceProduct"
+                    android:id="@+id/idItem_CartPriceProduct"
                     android:textAppearance="?attr/textAppearanceBody2"
                     android:textColor="?android:attr/textColorSecondary"
                     />
@@ -51,7 +51,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:text="Descripción del prodcuto"
-                    android:id="@+id/idProduct_ViewDescriptionProduct"
+                    android:id="@+id/idItem_CartDescriptionProduct"
                     android:textAppearance="?attr/textAppearanceBody2"
                     android:textColor="?android:attr/textColorSecondary"
                     />
@@ -78,7 +78,7 @@
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/idItem_CartNumber"
                     style="?attr/borderlessButtonStyle"
-                    android:layout_width="100px"
+                    android:layout_width="125px"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
                     android:layout_marginRight="8dp"
