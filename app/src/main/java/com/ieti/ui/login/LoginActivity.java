@@ -26,10 +26,13 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class LoginActivity extends AppCompatActivity {
 
     private final ExecutorService executorService = Executors.newFixedThreadPool(1);
+    private boolean changeView;
 
     @Override
     public void onCreate(Bundle savedInstanceState){
+        changeView = false;
         super.onCreate(savedInstanceState);
+        validate();
         setContentView(R.layout.activity_login);
         getSupportActionBar().hide();
     }
@@ -37,8 +40,12 @@ public class LoginActivity extends AppCompatActivity {
     public void validate(){
         SharedPreferences sharedPref =
                 getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE );
-        if (sharedPref.contains("TOKEN_KEY")){
+        boolean token = sharedPref.contains("TOKEN_KEY");
+        //boolean token =true;
+        if (token){
+            changeView = true;
             Intent intent = new Intent(this,UserProfile.class);
+            startActivity(intent);
         }
     }
 
@@ -74,9 +81,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onRestart(){
         super.onRestart();
-        SharedPreferences sharedPref =
-                getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE );
-        if (sharedPref.contains("TOKEN_KEY")){
+        if(changeView) {
             onBackPressed();
         }
     }
