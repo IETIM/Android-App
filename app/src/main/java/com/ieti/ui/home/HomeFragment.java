@@ -16,17 +16,22 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.ieti.persistence.ShopPersistence;
+import com.ieti.persistence.impl.ShopPersistenceHttpImpl;
 import com.ieti.persistence.impl.ShopPersistenceImpl;
 import com.ieti.ui.R;
 import com.ieti.ui.stores.StoreActivity;
 
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public class HomeFragment extends Fragment {
 
     private HomeViewModel homeViewModel;
 
-    private ShopPersistence persistence = ShopPersistenceImpl.getInstance();
+    //private ShopPersistence persistence = ShopPersistenceImpl.getInstance();
+    private ShopPersistence persistence = ShopPersistenceHttpImpl.getInstance();
+    private Executor executor = Executors.newFixedThreadPool(1);
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -38,12 +43,16 @@ public class HomeFragment extends Fragment {
     }
 
     public void showCategories(View root){
-        List<String> categories = persistence.getCategories();
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getContext(),
-                android.R.layout.simple_list_item_1,categories);
-        ((GridView) root.findViewById(R.id.layout)).setAdapter(adapter);
-        ((GridView) root.findViewById(R.id.layout)).setOnItemClickListener((listView, view, position,id)->{
-            changeView(categories.get(position));
+        executor.execute(()->{
+            List<String> categories = persistence.getCategories();
+            getActivity().runOnUiThread(()->{
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getContext(),
+                        android.R.layout.simple_list_item_1,categories);
+                ((GridView) root.findViewById(R.id.layout)).setAdapter(adapter);
+                ((GridView) root.findViewById(R.id.layout)).setOnItemClickListener((listView, view, position,id)->{
+                    changeView(categories.get(position));
+                });
+            });
         });
 
     }
