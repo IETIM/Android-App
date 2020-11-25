@@ -9,17 +9,21 @@ import com.ieti.model.Product;
 import com.ieti.model.Purchase;
 import com.ieti.persistence.ProductPersistence;
 import com.ieti.persistence.impl.CartPersistenceImpl;
+import com.ieti.persistence.impl.ProductPersistenceHttpImpl;
 import com.ieti.persistence.impl.ProductPersistenceImpl;
 import com.ieti.ui.R;
 
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public class CartAdapter extends BaseAdapter {
 
     private CartActivity context;
     private List<Purchase> purchases;
-    private ProductPersistence productPersistence = ProductPersistenceImpl.getInstance();
+    private ProductPersistence productPersistence = ProductPersistenceHttpImpl.getInstance();
     private CartPersistenceImpl cartPersistenceImpl;
+    private Executor executor = Executors.newFixedThreadPool(1);
 
     public CartAdapter(CartActivity context, CartPersistenceImpl cartPersistenceImpl) {
         this.context = context;
@@ -46,13 +50,17 @@ public class CartAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         Purchase purchase = getItem(position);
         View cardView = LayoutInflater.from(context).inflate(R.layout.item_cart, null).findViewById(R.id.idItem_CartCard);
-        Product product = productPersistence.getProductById(purchase.getProductId());
-        ((TextView)cardView.findViewById(R.id.idItem_CartNameProduct)).setText(product.getName());
-        ((TextView)cardView.findViewById(R.id.idItem_CartPriceProduct)).setText(product.getPrice().toString());
-        ((TextView)cardView.findViewById(R.id.idItem_CartDescriptionProduct)).setText(product.getDescription());
-        cardView.findViewById(R.id.idItem_CartPlus).setOnClickListener((view) -> sumQuantity(view, cardView, purchase));
-        cardView.findViewById(R.id.idItem_CartLess).setOnClickListener((view) -> substractQuantity(view, cardView, purchase));
-        ((TextView)cardView.findViewById(R.id.idItem_CartNumber)).setText(purchase.getQuantity() + "");
+        executor.execute(() -> {
+            Product product = productPersistence.getProductById(purchase.getProductId());
+            context.runOnUiThread(() -> {
+                ((TextView)cardView.findViewById(R.id.idItem_CartNameProduct)).setText(product.getName());
+                ((TextView)cardView.findViewById(R.id.idItem_CartPriceProduct)).setText(product.getPrice().toString());
+                ((TextView)cardView.findViewById(R.id.idItem_CartDescriptionProduct)).setText(product.getDescription());
+                cardView.findViewById(R.id.idItem_CartPlus).setOnClickListener((view) -> sumQuantity(view, cardView, purchase));
+                cardView.findViewById(R.id.idItem_CartLess).setOnClickListener((view) -> substractQuantity(view, cardView, purchase));
+                ((TextView)cardView.findViewById(R.id.idItem_CartNumber)).setText(purchase.getQuantity() + "");
+            });
+        });
 
         return cardView;
     }
