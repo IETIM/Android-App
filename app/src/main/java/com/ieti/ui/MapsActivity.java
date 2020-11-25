@@ -35,6 +35,7 @@ import com.ieti.map.service.PlaceService;
 import com.ieti.map.service.Places;
 import com.ieti.model.Shop;
 import com.ieti.persistence.ShopPersistence;
+import com.ieti.persistence.impl.ShopPersistenceHttpImpl;
 import com.ieti.persistence.impl.ShopPersistenceImpl;
 import com.ieti.ui.products.ProductsActivity;
 
@@ -66,7 +67,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         markers= new ArrayList<Marker>();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        shops = ShopPersistenceImpl.getInstance().getShops();
         placeService = new Retrofit.Builder().
                 baseUrl("https://geocode.search.hereapi.com/")
                 .addConverterFactory(JacksonConverterFactory.create())
@@ -155,18 +155,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void drawStores(){
-        for(Shop shop:shops){
-            LatLng latLng = getLocationShop(shop);
-            if(latLng!=null) {
-                runOnUiThread(()->{
-                    MarkerOptions a = new MarkerOptions()
-                            .position(latLng);
-                    Marker shopMarker = mMap.addMarker(a);
-                    markers.add(shopMarker);
-                    shopMarker.setTitle(shop.getName());
-                });
+        executorService.execute(()->{
+            shops = ShopPersistenceHttpImpl.getInstance().getShops();
+            for(Shop shop:shops){
+                LatLng latLng = getLocationShop(shop);
+                if(latLng!=null) {
+                    runOnUiThread(()->{
+                        MarkerOptions a = new MarkerOptions()
+                                .position(latLng);
+                        Marker shopMarker = mMap.addMarker(a);
+                        markers.add(shopMarker);
+                        shopMarker.setTitle(shop.getName());
+                    });
+                }
             }
-        }
+        });
     }
 
     private LatLng getLocationShop(Shop shop) {
