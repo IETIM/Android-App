@@ -54,6 +54,9 @@
             android:name=".products.ProductsActivity"
             android:parentActivityName=".stores.StoreActivity" />
         <activity
+            android:name=".products.cart.CartActivity"
+            android:parentActivityName=".products.cart.CartActivity"></activity>
+        <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps"></activity>
     </application>

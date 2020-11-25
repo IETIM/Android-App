@@ -43,7 +43,7 @@ public class StoreAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         Shop shop = getItem(position);
-        View card = LayoutInflater.from(context).inflate(R.layout.item_tienda,null).findViewById(R.id.idProduct_ViewCard);
+        View card = LayoutInflater.from(context).inflate(R.layout.item_tienda,null).findViewById(R.id.idItem_CartCard);
         ((TextView)card.findViewById(R.id.name)).setText(shop.getName());
         ((TextView)card.findViewById(R.id.desc)).setText(shop.getLocation());
         card.findViewById(R.id.idItem_TiendaVer).setOnClickListener((view) -> {

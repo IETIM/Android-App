@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import com.google.android.material.navigation.NavigationView;
+import com.ieti.ui.products.cart.CartActivity;
+import com.ieti.ui.products.cart.CartOption;
 import com.ieti.ui.login.LoginActivity;
 
 import androidx.navigation.NavController;
@@ -38,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
+        CartOption.onClickCart(menu, this);
         findViewById(R.id.container).setOnClickListener((v -> redirectProfile()));
         return true;
     }
