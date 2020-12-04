@@ -17,6 +17,7 @@
 
             <!-- Media -->
             <ImageView
+                android:id="@+id/idImageItemCart"
                 android:layout_width="match_parent"
                 android:layout_height="178dp"
                 android:contentDescription="Imagen provisional de un producto"
