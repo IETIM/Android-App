@@ -1,9 +1,12 @@
 package com.ieti.ui.products.cart;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 import com.ieti.model.Product;
 import com.ieti.model.Purchase;
@@ -13,6 +16,9 @@ import com.ieti.persistence.impl.ProductPersistenceHttpImpl;
 import com.ieti.persistence.impl.ProductPersistenceImpl;
 import com.ieti.ui.R;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -52,14 +58,24 @@ public class CartAdapter extends BaseAdapter {
         View cardView = LayoutInflater.from(context).inflate(R.layout.item_cart, null).findViewById(R.id.idItem_CartCard);
         executor.execute(() -> {
             Product product = productPersistence.getProductById(purchase.getProductId());
-            context.runOnUiThread(() -> {
-                ((TextView)cardView.findViewById(R.id.idItem_CartNameProduct)).setText(product.getName());
-                ((TextView)cardView.findViewById(R.id.idItem_CartPriceProduct)).setText(product.getPrice().toString());
-                ((TextView)cardView.findViewById(R.id.idItem_CartDescriptionProduct)).setText(product.getDescription());
-                cardView.findViewById(R.id.idItem_CartPlus).setOnClickListener((view) -> sumQuantity(view, cardView, purchase));
-                cardView.findViewById(R.id.idItem_CartLess).setOnClickListener((view) -> substractQuantity(view, cardView, purchase));
-                ((TextView)cardView.findViewById(R.id.idItem_CartNumber)).setText(purchase.getQuantity() + "");
-            });
+            URL url = null;
+            try {
+                url = new URL(product.getImage());
+                Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+                context.runOnUiThread(() -> {
+                    ((TextView)cardView.findViewById(R.id.idItem_CartNameProduct)).setText(product.getName());
+                    ((TextView)cardView.findViewById(R.id.idItem_CartPriceProduct)).setText(product.getPrice().toString());
+                    ((TextView)cardView.findViewById(R.id.idItem_CartDescriptionProduct)).setText(product.getDescription());
+                    cardView.findViewById(R.id.idItem_CartPlus).setOnClickListener((view) -> sumQuantity(view, cardView, purchase));
+                    cardView.findViewById(R.id.idItem_CartLess).setOnClickListener((view) -> substractQuantity(view, cardView, purchase));
+                    ((TextView)cardView.findViewById(R.id.idItem_CartNumber)).setText(purchase.getQuantity() + "");
+                    ((ImageView)cardView.findViewById(R.id.idImageItemCart)).setImageBitmap(bmp);
+                });
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
         });
 
         return cardView;
