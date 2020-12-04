@@ -7,6 +7,7 @@ public class Shop {
     private String id;
     private String name;
     private String location;
+    private String image;
     private String type;
     private String apiClient;
     private String apiSecret;
@@ -76,5 +77,13 @@ public class Shop {
 
     public void setProducts(List<Product> products) {
         this.products = products;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }
