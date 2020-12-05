@@ -63,7 +63,7 @@ public class StoreAdapter extends BaseAdapter {
                 URL url = new URL(shop.getImage());
                 Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
                 ((Activity) context).runOnUiThread(()->{
-                    ((ImageView)((Activity) context).findViewById(R.id.img)).setImageBitmap(bmp);
+                    ((ImageView)card.findViewById(R.id.img)).setImageBitmap(bmp);
                 });
             }catch (Exception e){
                 e.printStackTrace();
